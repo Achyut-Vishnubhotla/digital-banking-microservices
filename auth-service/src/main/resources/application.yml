@@ -1,0 +1,37 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/authdb}
+    username: ${DB_USER:bank}
+    password: ${DB_PASSWORD:change-me}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update   # fine for a demo; use Flyway/Liquibase migrations in real projects
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            # Create a GitHub OAuth App (see README). "disabled" lets the service start without it.
+            client-id: ${GITHUB_CLIENT_ID:disabled}
+            client-secret: ${GITHUB_CLIENT_SECRET:disabled}
+            scope: read:user
+            redirect-uri: ${OAUTH_REDIRECT_URI:http://localhost:3000/login/oauth2/code/github}
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  jwt:
+    secret: ${JWT_SECRET}
+    access-minutes: 15
+    refresh-days: 7
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
